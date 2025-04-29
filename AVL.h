@@ -1,14 +1,15 @@
-// avl.hpp
 #ifndef AVL_H
 #define AVL_H
 
 #include "ABB.h"
 #include "nodeAVL.h"
+#include <iostream>
 
 template<class Key>
 class AVL : public ABB<Key> {
 private:
     bool traza;
+
 public:
     AVL(bool trace = false) : traza(trace) {}
 
@@ -24,10 +25,12 @@ protected:
             crece = true;
             return true;
         }
+
         if (k == nodo->get_dato()) {
             crece = false;
             return false;
         }
+
         bool result;
         if (k < nodo->get_dato()) {
             result = insertar_rec((NodoAVL<Key>*&)nodo->get_izdo(), k, crece);
@@ -36,6 +39,7 @@ protected:
             result = insertar_rec((NodoAVL<Key>*&)nodo->get_dcho(), k, crece);
             if (crece) ajustar_derecha(nodo, crece);
         }
+
         return result;
     }
 
@@ -49,13 +53,18 @@ protected:
                 nodo->get_bal() = -1;
                 crece = true;
                 break;
-            case -1:
-                if (traza) {
-                    std::cout << "Desbalanceo II en nodo " << nodo->get_dato() << "\n";
+            case -1: {
+                NodoAVL<Key>* hijo = (NodoAVL<Key>*)nodo->get_izdo();
+                if (hijo->get_bal() == -1) {
+                    if (traza) std::cout << "Rotación II en nodo " << nodo->get_dato() << "\n";
+                    rotacion_II(nodo);
+                } else {
+                    if (traza) std::cout << "Rotación ID en nodo " << nodo->get_dato() << "\n";
+                    rotacion_ID(nodo);
                 }
-                rotacion_II(nodo);
                 crece = false;
                 break;
+            }
         }
     }
 
@@ -69,13 +78,18 @@ protected:
                 nodo->get_bal() = 1;
                 crece = true;
                 break;
-            case 1:
-                if (traza) {
-                    std::cout << "Desbalanceo DD en nodo " << nodo->get_dato() << "\n";
+            case 1: {
+                NodoAVL<Key>* hijo = (NodoAVL<Key>*)nodo->get_dcho();
+                if (hijo->get_bal() == 1) {
+                    if (traza) std::cout << "Rotación DD en nodo " << nodo->get_dato() << "\n";
+                    rotacion_DD(nodo);
+                } else {
+                    if (traza) std::cout << "Rotación DI en nodo " << nodo->get_dato() << "\n";
+                    rotacion_DI(nodo);
                 }
-                rotacion_DD(nodo);
                 crece = false;
                 break;
+            }
         }
     }
 
@@ -84,6 +98,7 @@ protected:
         nodo->get_izdo() = aux->get_dcho();
         aux->get_dcho() = nodo;
         nodo->get_bal() = 0;
+        aux->get_bal() = 0;
         nodo = aux;
     }
 
@@ -92,8 +107,55 @@ protected:
         nodo->get_dcho() = aux->get_izdo();
         aux->get_izdo() = nodo;
         nodo->get_bal() = 0;
+        aux->get_bal() = 0;
         nodo = aux;
+    }
+
+    void rotacion_ID(NodoAVL<Key>*& nodo) {
+        NodoAVL<Key>* hijo = (NodoAVL<Key>*)nodo->get_izdo();
+        NodoAVL<Key>* nieto = (NodoAVL<Key>*)hijo->get_dcho();
+
+        hijo->get_dcho() = nieto->get_izdo();
+        nodo->get_izdo() = nieto->get_dcho();
+        nieto->get_izdo() = hijo;
+        nieto->get_dcho() = nodo;
+
+        // Actualizar balances
+        if (nieto->get_bal() == -1) {
+            nodo->get_bal() = 1;
+            hijo->get_bal() = 0;
+        } else if (nieto->get_bal() == 1) {
+            nodo->get_bal() = 0;
+            hijo->get_bal() = -1;
+        } else {
+            nodo->get_bal() = hijo->get_bal() = 0;
+        }
+        nieto->get_bal() = 0;
+        nodo = nieto;
+    }
+
+    void rotacion_DI(NodoAVL<Key>*& nodo) {
+        NodoAVL<Key>* hijo = (NodoAVL<Key>*)nodo->get_dcho();
+        NodoAVL<Key>* nieto = (NodoAVL<Key>*)hijo->get_izdo();
+
+        hijo->get_izdo() = nieto->get_dcho();
+        nodo->get_dcho() = nieto->get_izdo();
+        nieto->get_dcho() = hijo;
+        nieto->get_izdo() = nodo;
+
+        // Actualizar balances
+        if (nieto->get_bal() == 1) {
+            nodo->get_bal() = -1;
+            hijo->get_bal() = 0;
+        } else if (nieto->get_bal() == -1) {
+            nodo->get_bal() = 0;
+            hijo->get_bal() = 1;
+        } else {
+            nodo->get_bal() = hijo->get_bal() = 0;
+        }
+        nieto->get_bal() = 0;
+        nodo = nieto;
     }
 };
 
-#endif // AVL_HPP
+#endif // AVL_H
