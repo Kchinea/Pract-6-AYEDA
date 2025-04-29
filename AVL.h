@@ -120,7 +120,6 @@ protected:
         nieto->get_izdo() = hijo;
         nieto->get_dcho() = nodo;
 
-        // Actualizar balances
         if (nieto->get_bal() == -1) {
             nodo->get_bal() = 1;
             hijo->get_bal() = 0;
@@ -143,7 +142,6 @@ protected:
         nieto->get_dcho() = hijo;
         nieto->get_izdo() = nodo;
 
-        // Actualizar balances
         if (nieto->get_bal() == 1) {
             nodo->get_bal() = -1;
             hijo->get_bal() = 0;
