@@ -16,4 +16,4 @@ public:
     NodoB*& get_dcho() { return dcho; }
 };
 
-#endif // NODOB_HPP
+#endif
