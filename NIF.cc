@@ -71,3 +71,11 @@ std::istream &operator>>(std::istream &is, NIF &nif)
   nif = NIF(input);
   return is;
 }
+std::ostream &operator<<(std::ostream &os, const NIF &nif)
+{
+  long number = nif.getNumber();
+  std::string nif_str = std::to_string(number / 100); 
+  char letter = static_cast<char>(number % 100);
+  os << nif_str << letter;
+  return os;
+}

@@ -20,7 +20,7 @@ public:
   bool operator<(const NIF &) const;
   bool operator>(const NIF &) const;
   long unsigned int size() const;
-
+  friend std::ostream &operator<<(std::ostream &os, const NIF &nif);
   operator long() const;
 
   friend std::istream &operator>>(std::istream &is, NIF &nif);
