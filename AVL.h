@@ -94,7 +94,6 @@ class AVL : public ABB<Key> {
     NodoAVL<Key>* aux = (NodoAVL<Key>*)nodo->get_izdo();
     nodo->get_izdo() = aux->get_dcho();
     aux->get_dcho() = nodo;
-    nodo->get_bal() = 0;
     aux->get_bal() = 0;
     nodo = aux;
   }
@@ -103,7 +102,6 @@ class AVL : public ABB<Key> {
     NodoAVL<Key>* aux = (NodoAVL<Key>*)nodo->get_dcho();
     nodo->get_dcho() = aux->get_izdo();
     aux->get_izdo() = nodo;
-    nodo->get_bal() = 0;
     aux->get_bal() = 0;
     nodo = aux;
   }
@@ -149,4 +147,4 @@ class AVL : public ABB<Key> {
   }
 };
 
-#endif // AVL_H
+#endif
